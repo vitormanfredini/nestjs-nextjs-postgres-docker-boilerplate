@@ -8,7 +8,7 @@
 
 `docker-compose up -d`
 
-## Generate (an apply) migration after changing Prisma Schema
+## Generate (and apply) migration after changing Prisma Schema
 
 `docker exec -it nestjs-backend sh -c "set -a && source .env.development && set +a && npx prisma migrate dev --name description_of_migration"`
 
