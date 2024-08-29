@@ -1,9 +1,10 @@
-import { Body, Controller, Header, Post } from '@nestjs/common';
-import { PrismaService } from 'src/services/prisma.service';
+import { Body, Controller, Get, Header, Post, UseGuards, Request } from '@nestjs/common';
 import { ApiResponse } from 'src/types/ApiResponse';
 import { CreateUserDto, LoginDto } from 'src/users/dto';
+import { JwtResponse, SanitizedUser } from 'src/users/types';
 import { UsersService } from 'src/users/users.service';
 import { errorResponse, successResponse } from 'src/utils/ApiResponse';
+import { AuthGuard } from './auth.guard'
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +15,7 @@ export class AuthController {
 
   @Post('new')
   @Header('Cache-Control', 'none')
-  async create(@Body() createUserDto: CreateUserDto): Promise<ApiResponse> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<ApiResponse<SanitizedUser>> {
     
     const validateResponse = this.usersService.validateNewUser(createUserDto);
     if(!validateResponse.success){
@@ -25,13 +26,14 @@ export class AuthController {
     if(!createResponse.success){
       return errorResponse(createResponse.errors);
     }
-
-    return successResponse(createResponse.data);
+    
+    const sanitizedUser = this.usersService.sanitizeUser(createResponse.data);
+    return successResponse(sanitizedUser);
   }
 
   @Post('login')
   @Header('Cache-Control', 'none')
-  async login(@Body() loginDto: LoginDto): Promise<ApiResponse> {
+  async login(@Body() loginDto: LoginDto): Promise<ApiResponse<JwtResponse>> {
     
     const validateResponse = this.usersService.validateLogin(loginDto);
     if(!validateResponse.success){
@@ -46,6 +48,13 @@ export class AuthController {
     return successResponse({
       jwt: loginResponse.data.jwt
     });
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('me')
+  getProfile(@Request() req): ApiResponse<SanitizedUser> {
+    const sanitizedUser = this.usersService.sanitizeUser(req.user);
+    return successResponse(sanitizedUser);
   }
 
 }

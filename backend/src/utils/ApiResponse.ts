@@ -1,6 +1,6 @@
 import { ApiResponseError, ApiResponseSuccess } from 'src/types/ApiResponse';
 
-export const successResponse = (data: any): ApiResponseSuccess => {
+export const successResponse = <T>(data: T): ApiResponseSuccess<T> => {
   return {
     success: true,
     data: data,

@@ -1,6 +1,6 @@
-export type ApiResponseSuccess = {
+export type ApiResponseSuccess<T> = {
   success: true;
-  data: any;
+  data: T;
 };
 
 export type ApiResponseError = {
@@ -8,4 +8,4 @@ export type ApiResponseError = {
   errors: any[];
 };
 
-export type ApiResponse = ApiResponseSuccess | ApiResponseError;
+export type ApiResponse<T> = ApiResponseSuccess<T> | ApiResponseError;

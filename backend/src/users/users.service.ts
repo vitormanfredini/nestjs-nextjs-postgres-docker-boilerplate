@@ -6,6 +6,7 @@ import { CreateUserDto, LoginDto } from './dto';
 import { CreationResponse } from 'src/types/CreationResponse';
 import { ValidationResponse } from 'src/types/ValidationResponse';
 import { AuthService } from 'src/auth/auth.service';
+import { JwtResponse, SanitizedUser } from './types';
 
 const newUserSchema = z.object({
   name: z.string({
@@ -30,10 +31,6 @@ const loginSchema = z.object({
     errorMap: () => ({ message: 'Enter your password.' })
   }).min(8).max(32)
 });
-
-export type JwtResponse = {
-  jwt: string;
-}
 
 @Injectable()
 export class UsersService {
@@ -182,6 +179,16 @@ export class UsersService {
       success: true,
       validData: validatedFields.data
     }
+  }
+
+  sanitizeUser(user: User): SanitizedUser {
+
+    return {
+      name: user.name,
+      username: user.username,
+      email: user.email
+    };
+    
   }
   
 }
