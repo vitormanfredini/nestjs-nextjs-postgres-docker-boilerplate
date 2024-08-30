@@ -5,12 +5,14 @@ import { JwtResponse, SanitizedUser } from 'src/users/types';
 import { UsersService } from 'src/users/users.service';
 import { errorResponse, successResponse } from 'src/utils/ApiResponse';
 import { AuthGuard } from './auth.guard'
+import { EmailService } from 'src/email/email.service';
 
 @Controller('auth')
 export class AuthController {
 
   constructor(
-    private usersService: UsersService
+    private usersService: UsersService,
+    private readonly emailService: EmailService
   ) {}
 
   @Post('new')
@@ -26,6 +28,17 @@ export class AuthController {
     if(!createResponse.success){
       return errorResponse(createResponse.errors);
     }
+
+    await this.emailService.send({
+      template: 'newuser',
+      data: {
+        email: createResponse.data.email,
+        name: createResponse.data.name,
+        subject: "Your account has been created succesfully",
+        message: `Hi ${createResponse.data.name}, your account has been created succesfully.\nYou can now use your credentials to login.`,
+        username: createResponse.data.username
+      }
+    });
     
     const sanitizedUser = this.usersService.sanitizeUser(createResponse.data);
     return successResponse(sanitizedUser);
