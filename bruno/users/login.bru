@@ -14,3 +14,7 @@ body:form-urlencoded {
   identifier: user.name.example
   password: asdf1234
 }
+
+script:post-response {
+  bru.setVar("jwt", res.body.data.jwt);
+}
