@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import { useFormState } from 'react-dom'
 
-import { BackendErrors } from '@/components/custom/BackendErrors'
 import { ZodErrors } from '@/components/custom/ZodErrors'
 import {
   CardTitle,
@@ -15,8 +16,8 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { registerUserAction } from '@/data/actions/auth-actions'
-import { FormResponse } from '@/types/formResponse'
+import { registerUserAction } from '@/data/actions/registerUserAction'
+import { useToast } from '@/hooks/use-toast'
 
 type RegisterUserFormState = {
   prevState: any
@@ -43,6 +44,26 @@ const initialState: RegisterUserFormState = {
 
 export function SignupForm() {
   const [formState, formAction] = useFormState(registerUserAction, initialState)
+  const { toast } = useToast()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!formState.success && formState.backendErrors) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: formState.backendErrors.join('\n'),
+      })
+    }
+
+    if (formState.success) {
+      toast({
+        title: 'Account created successfully',
+        description: 'Use your credentials to login.',
+      })
+      router.push('/login')
+    }
+  }, [formState, toast])
 
   return (
     <div className="w-full max-w-md">
@@ -108,7 +129,6 @@ export function SignupForm() {
             <button type="submit" className="w-full">
               Sign up
             </button>
-            <BackendErrors errors={formState.backendErrors} />
           </CardFooter>
         </Card>
         <div className="mt-4 text-center text-sm">

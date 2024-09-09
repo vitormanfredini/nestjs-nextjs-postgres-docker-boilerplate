@@ -120,14 +120,14 @@ export class UsersService {
       if(user === null){
         return {
           success: false,
-          errors: ['Incorrect email, username or password.']
+          errors: ['Incorrect email/username or password.']
         }
       }
 
       if(false === await this.authService.verifyPassword(loginDto.password,user.password)){
         return {
           success: false,
-          errors: ['Incorrect email, username or password.']
+          errors: ['Incorrect email/username or password.']
         }
       }
 

@@ -35,6 +35,7 @@ const newUserSchema = z.object({
 })
 
 export async function registerUserAction(prevState: any, formData: FormData) {
+  
   const validatedFields = newUserSchema.safeParse({
     name: formData.get('name'),
     username: formData.get('username'),

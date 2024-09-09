@@ -1,5 +1,7 @@
 import { getBackendURL } from '@/lib/utils'
 
+const baseUrl = getBackendURL()
+
 interface RegisterUserProps {
   name: string
   username: string
@@ -7,15 +9,8 @@ interface RegisterUserProps {
   email: string
 }
 
-interface LoginUserProps {
-  identifier: string
-  password: string
-}
-
-const baseUrl = getBackendURL()
-
 export async function registerUserService(userData: RegisterUserProps) {
-  const url = new URL('/users', baseUrl)
+  const url = new URL('/auth/new', baseUrl)
 
   try {
     const response = await fetch(url, {
@@ -28,9 +23,7 @@ export async function registerUserService(userData: RegisterUserProps) {
     })
 
     if (!response.ok) {
-      console.log(
-        'Registration Service Error: response not ok response not ok response not ok response not ok response not ok response not ok response not ok response not ok',
-      )
+      console.log('Registration Service Error: response not ok')
       return null
     }
 
@@ -40,8 +33,31 @@ export async function registerUserService(userData: RegisterUserProps) {
   }
 }
 
-export async function loginUserService(userData: LoginUserProps) {
-  const url = new URL('/api/auth/local', baseUrl)
+interface LoginUserProps {
+  identifier: string
+  password: string
+}
+
+type LoginRemoteApiResponseSuccesful = {
+  success: true
+  data: {
+    jwt: string
+  }
+}
+
+type LoginRemoteApiResponseUnsuccesful = {
+  success: false
+  errors: string[]
+}
+
+export type LoginRemoteApiResponse =
+  | LoginRemoteApiResponseSuccesful
+  | LoginRemoteApiResponseUnsuccesful
+
+export async function loginUserService(
+  userData: LoginUserProps,
+): Promise<LoginRemoteApiResponse> {
+  const url = new URL('/auth/login', baseUrl)
 
   try {
     const response = await fetch(url, {
@@ -53,10 +69,19 @@ export async function loginUserService(userData: LoginUserProps) {
       cache: 'no-cache',
     })
 
+    if (!response.ok) {
+      return {
+        success: false,
+        errors: ["Couldn't get valid response from server."],
+      }
+    }
+
     return response.json()
   } catch (error) {
-    console.error('Login Service Error:', error)
-    throw error
+    return {
+      success: false,
+      errors: [`Error while making login request: ${(error as Error).message}`],
+    }
   }
 }
 

@@ -1,7 +1,11 @@
-"use client";
+'use client'
 
-import Link from "next/link";
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { useFormState } from 'react-dom'
 
+import { ZodErrors } from '@/components/custom/ZodErrors'
 import {
   CardTitle,
   CardDescription,
@@ -9,15 +13,58 @@ import {
   CardContent,
   CardFooter,
   Card,
-} from "@/components/ui/card";
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { loginUserAction } from '@/data/actions/loginUserAction'
+import { useToast } from '@/hooks/use-toast'
 
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+type LoginUserFormState = {
+  prevState: any
+  data: any
+  validationErrors: null | {
+    identifier?: string
+    password?: string
+  }
+  backendErrors: null | any[]
+  success: null | boolean
+  message: null | string
+}
+
+const initialState: LoginUserFormState = {
+  prevState: null,
+  success: null,
+  data: null,
+  validationErrors: null,
+  backendErrors: null,
+  message: '',
+}
 
 export function LoginForm() {
+  const [formState, formAction] = useFormState(loginUserAction, initialState)
+  const { toast } = useToast()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!formState.success && formState.backendErrors) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: formState.backendErrors.join('\n'),
+      })
+    }
+
+    if (formState.success) {
+      toast({
+        title: 'Login was successful',
+      })
+      router.push('/me')
+    }
+  }, [formState, toast])
+
   return (
     <div className="w-full max-w-md">
-      <form>
+      <form action={formAction}>
         <Card>
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl font-bold">Login</CardTitle>
@@ -27,12 +74,15 @@ export function LoginForm() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email or Username</Label>
               <Input
                 id="identifier"
                 name="identifier"
                 type="text"
                 placeholder="username or email"
+              />
+              <ZodErrors
+                errors={formState.validationErrors?.fieldErrors?.identifier}
               />
             </div>
             <div className="space-y-2">
@@ -42,6 +92,9 @@ export function LoginForm() {
                 name="password"
                 type="password"
                 placeholder="password"
+              />
+              <ZodErrors
+                errors={formState.validationErrors?.fieldErrors?.password}
               />
             </div>
           </CardContent>
@@ -57,5 +110,5 @@ export function LoginForm() {
         </div>
       </form>
     </div>
-  );
+  )
 }

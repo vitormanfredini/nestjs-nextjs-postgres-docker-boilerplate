@@ -6,9 +6,9 @@ import { HeroSection, HeroSectionProps } from '@/components/custom/HeroSection'
 
 const heroSectionProps: HeroSectionProps = {
   title: 'Coolest dashboard on earth!',
-  subtitle: 'Login or sign up for a free account right now',
-  buttonText: 'Login',
-  buttonUrl: '/login',
+  subtitle: 'Sign up for a free account right now',
+  buttonText: 'Sign up',
+  buttonUrl: '/signup',
 }
 
 const featureSectionData: FeatureSectionProps = {
