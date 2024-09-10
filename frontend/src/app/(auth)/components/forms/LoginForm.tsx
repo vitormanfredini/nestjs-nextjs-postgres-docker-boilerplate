@@ -16,24 +16,16 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { registerUserAction } from '@/data/actions/registerUserAction'
+import { loginUserAction } from '@/data/actions/loginUserAction'
 import { useToast } from '@/hooks/use-toast'
+import { FormState } from '@/types/FormResponse'
 
-type RegisterUserFormState = {
-  prevState: any
-  data: any
-  validationErrors: null | {
-    name?: string
-    username?: string
-    email?: string
-    password?: string
-  }
-  backendErrors: null | any[]
-  success: null | boolean
-  message: null | string
+type LoginUserValidationErrors = {
+  identifier?: string
+  password?: string
 }
 
-const initialState: RegisterUserFormState = {
+const initialState: FormState<LoginUserValidationErrors> = {
   prevState: null,
   success: null,
   data: null,
@@ -42,8 +34,8 @@ const initialState: RegisterUserFormState = {
   message: '',
 }
 
-export function SignupForm() {
-  const [formState, formAction] = useFormState(registerUserAction, initialState)
+export function LoginForm() {
+  const [formState, formAction] = useFormState(loginUserAction, initialState)
   const { toast } = useToast()
   const router = useRouter()
 
@@ -58,10 +50,9 @@ export function SignupForm() {
 
     if (formState.success) {
       toast({
-        title: 'Account created successfully',
-        description: 'Use your credentials to login.',
+        title: 'Login was successful',
       })
-      router.push('/login')
+      router.push('/dashboards')
     }
   }, [formState, toast])
 
@@ -70,46 +61,22 @@ export function SignupForm() {
       <form action={formAction}>
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-3xl font-bold">Sign Up</CardTitle>
+            <CardTitle className="text-3xl font-bold">Login</CardTitle>
             <CardDescription>
-              Enter your details to create a new account
+              Enter your details to sign in to your account
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="email">Email or Username</Label>
               <Input
-                id="name"
-                name="name"
+                id="identifier"
+                name="identifier"
                 type="text"
-                placeholder="full name"
+                placeholder="username or email"
               />
               <ZodErrors
-                errors={formState.validationErrors?.fieldErrors?.name}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                name="username"
-                type="text"
-                placeholder="username"
-              />
-              <ZodErrors
-                errors={formState.validationErrors?.fieldErrors?.username}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="name@example.com"
-              />
-              <ZodErrors
-                errors={formState.validationErrors?.fieldErrors?.email}
+                errors={formState.validationErrors?.fieldErrors?.identifier}
               />
             </div>
             <div className="space-y-2">
@@ -126,15 +93,13 @@ export function SignupForm() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">
-            <button type="submit" className="w-full">
-              Sign up
-            </button>
+            <button className="w-full">Login</button>
           </CardFooter>
         </Card>
         <div className="mt-4 text-center text-sm">
-          Have an account?
-          <Link className="underline ml-2" href="login">
-            Login
+          Don&apos;t have an account?
+          <Link className="underline ml-2" href="signup">
+            Sign Up
           </Link>
         </div>
       </form>

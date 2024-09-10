@@ -10,7 +10,7 @@ import { Toaster } from '@/components/ui/toaster'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Coolest Dashboard Ever',
+  title: 'Coolest Dashboards',
   description: 'Such numbers, many amazings.',
 }
 
@@ -30,15 +30,19 @@ const footerProps: FooterProps = {
     text: 'Coolest Dashboards',
     url: '/',
   },
-  text: 'iawudh aiwudh awiu dawu',
+  text: 'The right data where you need it',
   socialLinks: [
     {
       text: 'instagram',
-      url: 'https://instagram.com/codemadeart',
+      url: 'https://twitter.com/asd123',
     },
     {
       text: 'youtube',
-      url: 'https://youtube.com/codemadeart',
+      url: 'https://youtube.com/asd123',
+    },
+    {
+      text: 'github',
+      url: 'https://github.com/asd123',
     },
   ],
 }

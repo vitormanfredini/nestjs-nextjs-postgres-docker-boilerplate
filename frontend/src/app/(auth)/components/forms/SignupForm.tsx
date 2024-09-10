@@ -16,22 +16,18 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { loginUserAction } from '@/data/actions/loginUserAction'
+import { registerUserAction } from '@/data/actions/registerUserAction'
 import { useToast } from '@/hooks/use-toast'
+import { FormState } from '@/types/FormResponse'
 
-type LoginUserFormState = {
-  prevState: any
-  data: any
-  validationErrors: null | {
-    identifier?: string
-    password?: string
-  }
-  backendErrors: null | any[]
-  success: null | boolean
-  message: null | string
+type RegisterUserValidationErrors = {
+  name?: string
+  username?: string
+  email?: string
+  password?: string
 }
 
-const initialState: LoginUserFormState = {
+const initialState: FormState<RegisterUserValidationErrors> = {
   prevState: null,
   success: null,
   data: null,
@@ -40,8 +36,8 @@ const initialState: LoginUserFormState = {
   message: '',
 }
 
-export function LoginForm() {
-  const [formState, formAction] = useFormState(loginUserAction, initialState)
+export function SignupForm() {
+  const [formState, formAction] = useFormState(registerUserAction, initialState)
   const { toast } = useToast()
   const router = useRouter()
 
@@ -56,9 +52,10 @@ export function LoginForm() {
 
     if (formState.success) {
       toast({
-        title: 'Login was successful',
+        title: 'Account created successfully',
+        description: 'Use your credentials to login.',
       })
-      router.push('/me')
+      router.push('/login')
     }
   }, [formState, toast])
 
@@ -67,22 +64,46 @@ export function LoginForm() {
       <form action={formAction}>
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-3xl font-bold">Login</CardTitle>
+            <CardTitle className="text-3xl font-bold">Sign Up</CardTitle>
             <CardDescription>
-              Enter your details to sign in to your account
+              Enter your details to create a new account
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email or Username</Label>
+              <Label htmlFor="name">Name</Label>
               <Input
-                id="identifier"
-                name="identifier"
+                id="name"
+                name="name"
                 type="text"
-                placeholder="username or email"
+                placeholder="full name"
               />
               <ZodErrors
-                errors={formState.validationErrors?.fieldErrors?.identifier}
+                errors={formState.validationErrors?.fieldErrors?.name}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="username"
+              />
+              <ZodErrors
+                errors={formState.validationErrors?.fieldErrors?.username}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="name@example.com"
+              />
+              <ZodErrors
+                errors={formState.validationErrors?.fieldErrors?.email}
               />
             </div>
             <div className="space-y-2">
@@ -99,13 +120,15 @@ export function LoginForm() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">
-            <button className="w-full">Login</button>
+            <button type="submit" className="w-full">
+              Sign up
+            </button>
           </CardFooter>
         </Card>
         <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?
-          <Link className="underline ml-2" href="signup">
-            Sign Up
+          Have an account?
+          <Link className="underline ml-2" href="login">
+            Login
           </Link>
         </div>
       </form>

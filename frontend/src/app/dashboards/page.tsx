@@ -1,11 +1,11 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import { MeInfo } from '@/app/components/MeInfo'
-import { getFrontendURL } from '@/lib/utils'
+import { MeInfo } from '@/app/(auth)/components/MeInfo'
+import { fetchWithDefaults, getFrontendURL } from '@/lib/utils'
 
 export default async function MeRoute() {
-  const response = await fetch(getFrontendURL() + '/api/user/me', {
+  const response = await fetchWithDefaults(getFrontendURL() + '/api/user/me', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

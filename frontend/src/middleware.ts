@@ -1,3 +1,4 @@
+import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
@@ -7,20 +8,14 @@ export function middleware(request: NextRequest) {
   const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname)
   const isApiRoute = request.nextUrl.pathname.substring(0, 4) === '/api'
 
-  // console.log('pathname', request.nextUrl.pathname)
-  // console.log('isApiRoute', isApiRoute)
-  // console.log('accessToken', accessToken)
-
-  if (!isApiRoute) {
-    if (!isPublicRoute && !accessToken) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+  if (!isApiRoute && !isPublicRoute && !accessToken) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   const response = NextResponse.next()
 
   // if (accessToken) {
-  // response.headers.set('Cookie', accessToken?.value || '')
+  //   response.headers.set('Cookie', headers().get('cookie') || '')
   // }
 
   return response

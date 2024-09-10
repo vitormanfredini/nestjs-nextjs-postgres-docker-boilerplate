@@ -14,15 +14,15 @@ export function getFrontendURL(): string {
   return process.env.FRONTEND_URL || ''
 }
 
-export async function fetchWithAuth(
+export async function fetchWithAccessToken(
   req: NextRequest,
   endpoint: string,
   options: RequestInit = {},
-) {
+): Promise<Response> {
   const headers = {
-    ...options.headers,
-    Authorization: ``,
+    Authorization: '',
     'Content-Type': 'application/json',
+    ...options.headers,
   }
 
   const accessToken = req.cookies.get('accessToken')?.value
@@ -31,18 +31,23 @@ export async function fetchWithAuth(
     headers.Authorization = `Bearer ${accessToken}`
   }
 
-  const response = await fetch(endpoint, {
+  return await fetch(endpoint, {
     ...options,
     headers,
   })
+}
 
-  if (!response.ok && response.status === 401) {
-    return response.json()
+export async function fetchWithDefaults(
+  endpoint: string,
+  options: RequestInit = {},
+): Promise<Response> {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
   }
 
-  if (!response.ok) {
-    throw new Error(`Error fetching from ${endpoint}`)
-  }
-
-  return response.json()
+  return await fetch(endpoint, {
+    ...options,
+    headers,
+  })
 }

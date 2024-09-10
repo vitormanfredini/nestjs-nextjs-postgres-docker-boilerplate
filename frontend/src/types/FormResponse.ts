@@ -14,3 +14,12 @@ export type FormResponseError = {
   backendErrors: any
   data: null
 }
+
+export type FormState<T> = {
+  prevState: any
+  data: any
+  validationErrors: null | T
+  backendErrors: null | any[]
+  success: null | boolean
+  message: null | string
+}
