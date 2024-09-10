@@ -28,10 +28,7 @@ export async function fetchWithAuth(
   const accessToken = req.cookies.get('accessToken')?.value
 
   if (accessToken) {
-    console.log('ACHOU token no cookie')
     headers.Authorization = `Bearer ${accessToken}`
-  } else {
-    console.log('nao achou token no cookie')
   }
 
   const response = await fetch(endpoint, {
@@ -40,7 +37,6 @@ export async function fetchWithAuth(
   })
 
   if (!response.ok && response.status === 401) {
-    console.log('UNAUTHORIZED')
     return response.json()
   }
 

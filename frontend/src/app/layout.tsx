@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
 import './globals.css'
+
 import { FooterProps, Footer } from '@/components/custom/Footer'
 import { Header, HeaderProps } from '@/components/custom/Header'
 import { Toaster } from '@/components/ui/toaster'
