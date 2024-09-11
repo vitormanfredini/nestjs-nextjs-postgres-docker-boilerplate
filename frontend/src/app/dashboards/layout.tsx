@@ -1,3 +1,5 @@
+import { UserProvider } from '@/context/UserContext'
+
 export default function authLayout({
   children,
 }: {

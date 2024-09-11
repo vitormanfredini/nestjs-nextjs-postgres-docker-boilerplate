@@ -134,7 +134,10 @@ export class UsersService {
       return {
         success: true,
         data: {
-          jwt: await this.authService.generateAccessToken(user)
+          jwt: await this.authService.generateAccessToken(user),
+          username: user.username,
+          name: user.name,
+          email: user.email,
         }
       };
 

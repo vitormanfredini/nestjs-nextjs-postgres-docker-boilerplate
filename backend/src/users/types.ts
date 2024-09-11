@@ -4,6 +4,6 @@ export type SanitizedUser = {
   name: string;
 }
 
-export type JwtResponse = {
+export type JwtResponse = SanitizedUser & {
   jwt: string;
 }

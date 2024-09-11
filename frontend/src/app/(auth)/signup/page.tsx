@@ -1,5 +1,7 @@
+'use client'
+
 import { SignupForm } from '@/app/(auth)/components/forms/SignupForm'
 
-export default function signupRoute() {
+export default function SignupRoute() {
   return <SignupForm />
 }

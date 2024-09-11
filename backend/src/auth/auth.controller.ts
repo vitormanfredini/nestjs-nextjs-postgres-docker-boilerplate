@@ -59,7 +59,10 @@ export class AuthController {
     }
 
     return successResponse({
-      jwt: loginResponse.data.jwt
+      jwt: loginResponse.data.jwt,
+      username: loginResponse.data.username,
+      name: loginResponse.data.name,
+      email: loginResponse.data.email,
     });
   }
 

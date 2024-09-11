@@ -42,6 +42,9 @@ type LoginRemoteApiResponseSuccesful = {
   success: true
   data: {
     jwt: string
+    username: string
+    name: string
+    email: string
   }
 }
 

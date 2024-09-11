@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
@@ -16,6 +14,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useUser } from '@/context/UserContext'
 import { loginUserAction } from '@/data/actions/loginUserAction'
 import { useToast } from '@/hooks/use-toast'
 import { FormState } from '@/types/FormResponse'
@@ -38,6 +37,7 @@ export function LoginForm() {
   const [formState, formAction] = useFormState(loginUserAction, initialState)
   const { toast } = useToast()
   const router = useRouter()
+  const { setUserData } = useUser()
 
   useEffect(() => {
     if (!formState.success && formState.backendErrors) {
@@ -49,6 +49,11 @@ export function LoginForm() {
     }
 
     if (formState.success) {
+      setUserData({
+        name: formState.data.name,
+        username: formState.data.username,
+        email: formState.data.email,
+      })
       toast({
         title: 'Login was successful',
       })

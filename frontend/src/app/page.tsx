@@ -1,8 +1,12 @@
+'use client'
+import { redirect } from 'next/navigation'
+
 import {
   FeatureSection,
   FeatureSectionProps,
 } from '@/components/custom/FeaturesSection'
 import { HeroSection, HeroSectionProps } from '@/components/custom/HeroSection'
+import { useUser } from '@/context/UserContext'
 
 const heroSectionProps: HeroSectionProps = {
   title: 'Coolest dashboard on earth!',
@@ -34,6 +38,12 @@ const featureSectionData: FeatureSectionProps = {
 }
 
 export default function Home() {
+  const { userData } = useUser()
+
+  if (userData) {
+    redirect('/dashboards')
+  }
+
   return (
     <main>
       <HeroSection props={heroSectionProps} />

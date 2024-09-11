@@ -21,6 +21,11 @@ export async function POST(req: NextRequest) {
     const response = NextResponse.json({
       success: true,
       message: 'Login successful',
+      data: {
+        username: loginRemoteResponse.data.username,
+        name: loginRemoteResponse.data.name,
+        email: loginRemoteResponse.data.email,
+      },
     })
 
     response.cookies.set({

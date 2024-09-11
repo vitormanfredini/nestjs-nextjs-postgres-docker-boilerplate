@@ -3,9 +3,14 @@ import { Inter } from 'next/font/google'
 
 import './globals.css'
 
+import { headers } from 'next/headers'
+
 import { FooterProps, Footer } from '@/components/custom/Footer'
 import { Header, HeaderProps } from '@/components/custom/Header'
 import { Toaster } from '@/components/ui/toaster'
+import { UserProvider } from '@/context/UserContext'
+import { fetchWithDefaults, getFrontendURL } from '@/lib/utils'
+import { User } from '@/types/User'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -47,17 +52,39 @@ const footerProps: FooterProps = {
   ],
 }
 
-export default function RootLayout({
+const getUserData = async (): Promise<User | null> => {
+  const response = await fetchWithDefaults(getFrontendURL() + '/api/user/me', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Cookie: headers().get('cookie') || '',
+    },
+    cache: 'no-cache',
+  })
+
+  if (!response.ok) {
+    return null
+  }
+
+  const { data } = await response.json()
+  return data
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const user = await getUserData()
+
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header {...headerProps} />
-        <div>{children}</div>
-        <Footer {...footerProps} />
+        <UserProvider user={user}>
+          <Header {...headerProps} />
+          <div>{children}</div>
+          <Footer {...footerProps} />
+        </UserProvider>
         <Toaster />
       </body>
     </html>
