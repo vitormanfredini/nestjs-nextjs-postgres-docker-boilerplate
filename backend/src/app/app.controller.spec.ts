@@ -15,8 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(typeof  appController.serverIsRunning()).toBe('string');
+    it('should get server message with test environment', () => {
+      expect(appController.serverIsRunning()).toBe('Server is running in test mode.');
     });
   });
 });

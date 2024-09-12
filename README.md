@@ -8,7 +8,7 @@
 
 `docker-compose up -d`
 
-## Apply Prisma migrations
+## Apply Prisma migrations em desenvolvimento
 
 `docker exec -it nestjs-backend sh -c "set -a && source .env.development && set +a && npx prisma migrate dev"`
 
@@ -36,7 +36,12 @@ Adminer will be available on [http://localhost:8080/?pgsql=postgres&username=adm
 
 Use [Bruno Http Client](https://www.usebruno.com/) to load `bruno` folder. It's like Postman, but saves requests in files that can be tracked with version control.
 
+## Testing
+
+Backend:
+
+`docker-compose -f docker-compose.yml -f docker-compose.test.yml up backend`
+
 ## Future plans
 
-. Integrate SQLite for automated tests
 . Add an email provider

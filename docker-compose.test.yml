@@ -1,0 +1,15 @@
+services:
+  backend:
+    environment:
+      - NODE_ENV=test
+    command: sh -c "npm install && npm run test"
+
+  postgres:
+    environment:
+      POSTGRES_DB: testdatabase
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_test_data:
+    driver: local
